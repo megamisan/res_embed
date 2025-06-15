@@ -156,7 +156,12 @@ jobs:
       
     - name: Configure CMake (Static library)
       run: |
-        cmake -B build-static -DUSE_NASM=${{ matrix.use_nasm }} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_SHARED_LIBS=OFF
+        if [ "${{ runner.os }}" = "Windows" ]; then
+          cmake -B build-static -DUSE_NASM=${{ matrix.use_nasm }} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_SHARED_LIBS=OFF -G "Visual Studio 17 2022" -A x64 -DCMAKE_C_COMPILER=cl -DCMAKE_CXX_COMPILER=cl
+        else
+          cmake -B build-static -DUSE_NASM=${{ matrix.use_nasm }} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_SHARED_LIBS=OFF
+        fi
+      shell: bash
         
     - name: Build (Static library)
       run: |
@@ -176,7 +181,12 @@ jobs:
         
     - name: Configure CMake (Shared library)
       run: |
-        cmake -B build-shared -DUSE_NASM=${{ matrix.use_nasm }} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_SHARED_LIBS=ON
+        if [ "${{ runner.os }}" = "Windows" ]; then
+          cmake -B build-shared -DUSE_NASM=${{ matrix.use_nasm }} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_SHARED_LIBS=ON -G "Visual Studio 17 2022" -A x64 -DCMAKE_C_COMPILER=cl -DCMAKE_CXX_COMPILER=cl
+        else
+          cmake -B build-shared -DUSE_NASM=${{ matrix.use_nasm }} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_SHARED_LIBS=ON
+        fi
+      shell: bash
         
     - name: Build (Shared library)
       run: |
@@ -294,9 +304,14 @@ jobs:
         
     - name: Configure and install
       run: |
-        cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install
+        if [ "${{ runner.os }}" = "Windows" ]; then
+          cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -G "Visual Studio 17 2022" -A x64 -DCMAKE_C_COMPILER=cl -DCMAKE_CXX_COMPILER=cl
+        else
+          cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install
+        fi
         cmake --build build --config Release
         cmake --install build --config Release
+      shell: bash
         
     - name: Verify installation (Unix)
       if: runner.os != 'Windows'
