@@ -47,6 +47,10 @@ function(res_embed)
 	# Submit the resulting source file for compilation
 	add_library(${RES_EMBED_TARGET}_${RES_EMBED_NAME} STATIC ${EMBED_FILE_PATH})
 	set_target_properties(${RES_EMBED_TARGET}_${RES_EMBED_NAME} PROPERTIES LINKER_LANGUAGE C)
+	
+	# Add the library output directory to target link directories
+	target_link_directories(${RES_EMBED_TARGET} PRIVATE $<TARGET_FILE_DIR:${RES_EMBED_TARGET}_${RES_EMBED_NAME}>)
+	
 	if (RES_EMBED_KEYWORD)
 		target_link_libraries(${RES_EMBED_TARGET} PRIVATE ${RES_EMBED_TARGET}_${RES_EMBED_NAME})
 	else()
