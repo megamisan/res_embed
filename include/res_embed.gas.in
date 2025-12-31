@@ -10,3 +10,4 @@
 
 @OS_DEPENDENT_PREFIX@hex_size_@FILE_KEY_HASH@:
 .int @EMBED_FILE_SIZE@
+.section .note.GNU-stack,"",@progbits
